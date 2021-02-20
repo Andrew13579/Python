@@ -1,0 +1,101 @@
+学习过程中出现pip下载过慢的情况出现，因为访问的资源地址有问题。
+需要我们在C：\用户\当前用户下面\Python\pip.INI，让地址指向国内网站
+[global]
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+[install]
+trusted-host=mirrors.aliyun.com
+
+查看字符的ASCII值：ord  反过来：bin
+查看数据类型：type（）
+查看字符的长度：len（）
+
+
+lst  sort insert pop clear 
+创建字典：必须得是不可变的，列表就不行，字典是可变对象
+
+列表[]  元组（） 字符串（）
+
+查看内置对象使用dir（d） 查看如何使用的话使用help(d.pop)
+查看内存地址用id（d）
+
+清空python IDE控制台用cls
+
+查看python的安装路径 在命令提示符下 
+import sys
+print (sys.path)
+
+在IDE中使用清屏的话，必须在相应的路径C:\Users\Administrator.PC-202005161310\AppData\Local\Programs\Python\Python38\Lib\idlelib下面创建一个Clearwindows的一个文件
+内容如下：
+class ClearWindow:
+    menudefs = [
+        ('options', [None,
+                     ('Clear Shell Window', '<<clear-window>>'),
+                     ]), ]
+ 
+    def __init__(self, editwin):
+        self.editwin = editwin
+        self.text = self.editwin.text
+        self.text.bind("<<clear-window>>", self.clear_window2)
+ 
+        self.text.bind("<<undo>>", self.undo_event)  # add="+" doesn't work
+ 
+    def undo_event(self, event):
+        text = self.text
+ 
+        text.mark_set("iomark2", "iomark")
+        text.mark_set("insert2", "insert")
+        self.editwin.undo.undo_event(event)
+ 
+        # fix iomark and insert
+        text.mark_set("iomark", "iomark2")
+        text.mark_set("insert", "insert2")
+        text.mark_unset("iomark2")
+        text.mark_unset("insert2")
+ 
+    def clear_window2(self, event):  # Alternative method
+        # work around the ModifiedUndoDelegator
+        text = self.text
+        text.undo_block_start()
+        text.mark_set("iomark2", "iomark")
+        text.mark_set("iomark", 1.0)
+        text.delete(1.0, "iomark2 linestart")
+        text.mark_set("iomark", "iomark2")
+        text.mark_unset("iomark2")
+        text.undo_block_stop()
+        if self.text.compare('insert', '<', 'iomark'):
+            self.text.mark_set('insert', 'end-1c')
+        self.editwin.set_line_and_column()
+ 
+    def clear_window(self, event):
+        # remove undo delegator
+        undo = self.editwin.undo
+        self.editwin.per.removefilter(undo)
+ 
+        # clear the window, but preserve current command
+        self.text.delete(1.0, "iomark linestart")
+        if self.text.compare('insert', '<', 'iomark'):
+            self.text.mark_set('insert', 'end-1c')
+        self.editwin.set_line_and_column()
+ 
+        # restore undo delegator
+        self.editwin.per.insertfilter(undo)
+修改本路径下的文件config-extensions.def：
+[ClearWindow]
+enable = 1
+enable_editor = 0
+enable_shell = 1
+[ClearWindow_cfgBindings]
+clear-window = <Control-Key-w>
+这样一来就可是使用control + w清楚屏幕了
+
+集合：
+集合里面的元素必须用不可变对象，列表是可变对象
+集合里面的元素是无序的
+删除集合中元素：pop按照顺序删除，remove（）删除指定元素；discard（）没有对应元素时不报错
+>>> f_set = frozenset('qsff')
+>>> f_set
+frozenset({'f', 's', 'q'})
+
+浅拷贝：list、turple、set
+深拷贝：需要import copy  b3 = copy.deepcopy(b1)   b1是跟b3是不一样的
+
